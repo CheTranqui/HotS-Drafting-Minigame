@@ -1,0 +1,19 @@
+{
+  "TotalComps": 1,
+  "JMap": "BoE",
+  "Comp1": [
+    {
+      "JTeam": "GFE",
+      "JWhen": "March 2017",
+      "JPlace": "Fake Event",
+      "JAgainst": "Comp2",
+      "JBan1": "Sonya",
+      "JBan2": "Stitches",
+      "JPick1": "Zul'jin",
+      "JPick2": "Zeratul",
+      "JPick3": "Zarya",
+      "JPick4": "Varian",
+      "JPick5": "Valla"
+    }
+  ]
+}
