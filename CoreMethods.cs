@@ -314,4 +314,5 @@ public class CoreMethods : MonoBehaviour
         EnemyBan1.sprite = Resources.Load<Sprite>(portraitAssetPath);
         picAssetPath = "HotsPics/" + EBan1 + "Pic";
     }
+    
 }
