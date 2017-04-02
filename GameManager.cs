@@ -151,5 +151,4 @@ public class GameManager : MonoBehaviour {
         fullPicMiddle.SetActive(false);
     }
 
-
 }
