@@ -1,0 +1,74 @@
+{
+  "BoE": {
+    "Name": "Battlefield of Eternity",
+    "Facts": "\nThe Eternals are powerful.\n\nDestroying the Eternal's shields should be top priority.\n\nRotation: 1-4 (w/1 top).",
+    "Advice": "Even with the Eternal, stay 1-4 to absorb as much XP as possible.\nCap the shaman camps on these Diablo maps are the most powerful camps in the game.   Time shaman caps to coincide with Eternal pop."
+  },
+
+  "BBay": {
+    "Name": "Blackheart's Bay",
+    "Facts": "Coins win the game.\n\nOne jungler needed.\n\nRotation: 1-4 (w/1 bot)",
+    "Advice": "All camps give coins (giants, etc, included).\nAlways exercise caution when turning in.\nThis map has great snowball potential."
+  },
+
+  "Braxis": {
+    "Name": "Braxis Holdout",
+    "Facts": "Laning phase is important.\n\nGlobals are powerful on this map.\n\nRotation: 1-4",
+    "Advice": "Knight camps are strong, but the objectives are still more important.\nStay 1-4 unless pushing with your wave would get you a kill or two in the process."
+  },
+
+  "CursedH": {
+    "Name": "Cursed Hollow",
+    "Facts": "Bosses in both top and bot.\n\nCurses are valuable.\n\nRotation: 1-1-3",
+    "Advice": "During curse, push lanes.  Continuing 1-1-3 isn't a bad idea, especially if behind in XP. Quick, safe rotations win this map. It's all about the meta game and keeping mercs flowing. Boss lanes are most important."
+  },
+
+  "DShire": {
+    "Name": "Dragon Shire",
+    "Facts": "Early Dragon Knights are weak.\n\nThe bridges on top are death.\n\nRotation: 1-4 (w/1 top)",
+    "Advice": "Don't take mercs during shrine phases.\nUse the bushes below mid-lane to your advantage if you see the enemy team not traveling together."
+  },
+
+  "Garden": {
+    "Name": "Garden of Terror",
+    "Facts": "Six merc camps available.\n\nThe Terror is weak in early game, but very powerful later on.\n\nRotation: 1-1-3",
+    "Advice": "The small camps (giants) are effective.\nWhen controlling the Terror use your Q on cooldown if an enemy hero is in sight.\nTiming a merc camp or two to split push while controlling the Terror is very effective. Never put a tank or healer in the Terror."
+  },
+
+  "HMines": {
+    "Name": "Haunted Mines",
+    "Facts": "The golems are strong.\n\nRotation: 1-4 (w/1 top)",
+    "Advice": "Push or defend with the stronger of the two. Inside the mines, the middle minions give the most skulls. The Mercenary Queen trait with the sapper camps is very effective."
+  },
+
+  "InfernalS": {
+    "Name": "Infernal Shrines",
+    "Facts": "Top 2 camps are powerful.\n\nTop and bot lane are best.\n\nRotation: 1-1-3\nor 1-4 (w/1 top)",
+    "Advice": "Don't all-out push with punisher - send only 2 or 3 - it's better to split push.\nWhile defending, don't get near it until you're behind your own gates - if it jumps over the gate, it dies very quickly."
+  },
+
+  "SkyT": {
+    "Name": "Sky Temple",
+    "Facts": "Controlling sight is crucial.\n\nUse caution at middle shrine if without sight.\n\nRotation 1-3-1 (w/1 bot)",
+    "Advice": "Use camps to push lanes opposite of where the next shrine will be.\nDon't force shrine-based team fights. With a boss and the most common shrine,\nwinning bot is the most valuable lane."
+  },
+
+  "SpiderQueen": {
+    "Name": "Tomb of the Spider Queen",
+    "Facts": "Gems are most important.\n\nBoss in top lane.\n\nRotation:  1-4 (w/1 bot)",
+    "Advice": "Boss only matters in late game if timed with a turn-in. This map is snowballs easily.\nGem turn-ins are all that really matters.  Go 1-1-3 when you have webweavers.\nIf you have an XP advantage or it's late game, pushing with 4 or 5 is effective."
+  },
+
+  "TowersofD": {
+    "Name": "Towers of Doom",
+    "Facts": "Bot lane is massively important.\n\nTeam fights win the day\n\nRotation: 1-1-3",
+    "Advice": "This map always goes to late game making XP gain extremely important for team fights.\nThe camps on this map, if they make it through, directly damage the enemy core.\nBe cautious with every rotation."
+  },
+
+  "WarheadJ": {
+    "Name": "Warhead Junction",
+    "Facts": "Center of the nuke takes extra damage.\n\nIt's a big map, globals are effective.\n\nRotation: 1-1-3",
+    "Advice": "Nukes can help win team fights. Top and bot lanes are most important (boss lanes).\nIf an entire fort/keep is up, drop the nuke so that it hits as many buildings as possible.\nDue to the power of the post-18 nuke, never give up: just 3 nukes can destroy the core."
+  }
+
+}
