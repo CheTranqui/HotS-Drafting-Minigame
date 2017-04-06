@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Timers;
 using System.IO;
@@ -45,6 +45,10 @@ public class CoreMethods : MonoBehaviour
     public GameObject DropDownMap;
     public DropdownMapSwitcher ddm;
     public GameManager GM;
+    public GameObject WarriorPanel;
+    public GameObject SupportPanel;
+    public GameObject AssassinPanel;
+    public GameObject SpecialistPanel;
 
     private string fullJSON;
     private string picAssetPath;
@@ -52,7 +56,7 @@ public class CoreMethods : MonoBehaviour
     private int whoGoesFirst;
     private int randomMap;
     public string map;
-    public bool PlayerGoesFirst;
+    public string PlayerGoesFirst;
     public string P1Ban1;
     public string P1Ban2;
     public string P1Pick1;
@@ -70,17 +74,15 @@ public class CoreMethods : MonoBehaviour
     public string draftStage;
     private string jsonString;
     public string totalCompsPossible;
-    private int numberOfPossibleComps;
     public int possibleEnemyComp;
     public string activeTeam;
-    public bool enemyCompReady;
+    public string enemyCompReady;
 
     public static string chosenHero;
 
 
     Dictionary<string, string> playerTeam = new Dictionary<string, string>();
     Dictionary<string, string> enemyComp = new Dictionary<string, string>();
-
     public void StartDraft()
     {
         P1Ban1 = "none";
@@ -97,130 +99,152 @@ public class CoreMethods : MonoBehaviour
         EPick3 = "none";
         EPick4 = "none";
         EPick5 = "none";
-        enemyCompReady = false;
+        enemyCompReady = "no";
         enemyComp.Clear();
         activeTeam = "none";
-        HeroSelectionPanel.SetActive(true);
+        playerTeam.Add("Ban1", "");
+        playerTeam.Add("Ban2", "");
+        playerTeam.Add("Pick1", "");
+        playerTeam.Add("Pick2", "");
+        playerTeam.Add("Pick3", "");
+        playerTeam.Add("Pick4", "");
+        playerTeam.Add("Pick5", "");
         ddm = DropDownMap.GetComponent<DropdownMapSwitcher>();
         GM = gameObject.GetComponent<GameManager>();
-        whoGoesFirst = Random.Range(1, 3);
-        Debug.Log("Player " + whoGoesFirst + " goes first.");
+    }
 
-        if (whoGoesFirst == 1)
+        public void DisplayWhoGoesFirst()
         {
-            PlayerGoesFirst = true;
+            whoGoesFirst = Random.Range(1, 3);
+            Debug.Log("cm declares that:   " + whoGoesFirst + "   goes first.");
+            if (whoGoesFirst == 1)
+        {
+            PlayerGoesFirst = "Player";
             PlayerGoesFirstText.SetActive(true);
         }
         else
         {
-            PlayerGoesFirst = false;
+            PlayerGoesFirst = "Enemy";
             EnemyGoesFirstText.SetActive(true);
         }
     }
     public void ActiveTeamCheck()
     {
         draftStage = GM.draftStage;
-        Debug.Log("PlayerGoesFirst = " + PlayerGoesFirst);
-        Debug.Log("CM draftStage = " + draftStage);
-        if (!PlayerGoesFirst)
+        Debug.Log("cm draftStage = " + draftStage);
+        if (PlayerGoesFirst == "Player")
         {
-            if (draftStage == "FirstBan1")
-            {
+            if (draftStage == "Ban1")
                 activeTeam = "Player";
-            }
-            if (draftStage == "FirstPick1")
-            {
-                activeTeam = "Player";
-            }
-            if (draftStage == "FirstPick2")
-            {
-                activeTeam = "Player";
-            }
-            if (draftStage == "FirstPick3")
-            {
-                activeTeam = "Player";
-            }
-            if (draftStage == "FirstPick4")
-            {
-                activeTeam = "Player";
-            }
-            if (draftStage == "FirstPick5")
-            {
-                activeTeam = "Player";
-            }
-            else
-            {
+            if (draftStage == "Ban2")
                 activeTeam = "Enemy";
-            }
+            if (draftStage == "Pick1")
+                activeTeam = "Player";
+            if (draftStage == "Pick23")
+                activeTeam = "Enemy";
+            if (draftStage == "Pick45")
+                activeTeam = "Player";
+            if (draftStage == "Ban3")
+                activeTeam = "Enemy";
+            if (draftStage == "Ban4")
+                activeTeam = "Player";
+            if (draftStage == "Pick6")
+                activeTeam = "Enemy";
+            if (draftStage == "Pick78")
+                activeTeam = "Player";
+            if (draftStage == "Pick910")
+                activeTeam = "Enemy";
         }
-        if (PlayerGoesFirst)
+        if (PlayerGoesFirst == "Enemy")
         {
-            if (draftStage == "FirstBan1")
-            {
+            if (draftStage == "Ban1")
                 activeTeam = "Enemy";
-            }
-            if (draftStage == "FirstPick1")
-            {
-                activeTeam = "Enemy";
-            }
-            if (draftStage == "FirstPick2")
-            {
-                activeTeam = "Enemy";
-            }
-            if (draftStage == "FirstPick3")
-            {
-                activeTeam = "Enemy";
-            }
-            if (draftStage == "FirstPick4")
-            {
-                activeTeam = "Enemy";
-            }
-            if (draftStage == "FirstPick5")
-            {
-                activeTeam = "Enemy";
-            }
-            else
-            {
+            if (draftStage == "Ban2")
                 activeTeam = "Player";
-            }
+            if (draftStage == "Pick1")
+                activeTeam = "Enemy";
+            if (draftStage == "Pick23")
+                activeTeam = "Player";
+            if (draftStage == "Pick45")
+                activeTeam = "Enemy";
+            if (draftStage == "Ban3")
+                activeTeam = "Player";
+            if (draftStage == "Ban4")
+                activeTeam = "Enemy";
+            if (draftStage == "Pick6")
+                activeTeam = "Player";
+            if (draftStage == "Pick78")
+                activeTeam = "Enemy";
+            if (draftStage == "Pick910")
+                activeTeam = "Player";
         }
         Debug.Log("cm activeTeam = " + activeTeam);
     }
 
-    public void FirstBanStart()
+    public void DeactivateClassButtons()
+    {
+        WarriorPanel.SetActive(false);
+        SupportPanel.SetActive(false);
+        AssassinPanel.SetActive(false);
+        SpecialistPanel.SetActive(false);
+    }
+
+
+    public void GetMap()
     {
         map = GM.draftMap;
+    }
+
+    public void OpeningBan()
+    {
+        ActiveTeamCheck();
         if (activeTeam == "Player")
         {
             PlayerGoesFirstText.SetActive(false);
-            PlayerBanText.SetActive(true);
         }
         else
         {
             EnemyGoesFirstText.SetActive(false);
+        }
+        DisplayBanText();
+    }
+
+    public void DisplayBanText()
+    {
+        if (activeTeam == "Player")
+        {
+            PlayerBanText.SetActive(true);
+        }
+        else
+        {
             EnemyBanText.SetActive(true);
         }
     }
 
-
-    public void Ban1HeroChosen()
+    public void PlayerBanChosen()
     {
-        if (PlayerGoesFirst)
+        draftStage = GM.draftStage;
+        chosenHero = GM.myChosenHero;
+        PlayerBanText.SetActive(false);
+        portraitAssetPath = "HotSPortraits/" + chosenHero;
+        picAssetPath = "HotsPics/" + chosenHero + "Pic";
+        if ((draftStage == "Ban1") || (draftStage == "Ban2"))
         {
-            chosenHero = GM.myChosenHero;
             P1Ban1 = chosenHero;
-            PlayerBanText.SetActive(false);
-            playerTeam.Add("P1Ban1", P1Ban1);
-            portraitAssetPath = "HotSPortraits/" + chosenHero;
+            playerTeam["P1Ban1"] = P1Ban1;
             PlayerBan1.sprite = Resources.Load<Sprite>(portraitAssetPath);
-            picAssetPath = "HotsPics/" + chosenHero + "Pic";
         }
-        else { }
+        if ((draftStage == "Ban3") || (draftStage == "Ban4"))
+        {
+            P1Ban2 = chosenHero;
+            playerTeam["P1Ban2"] = P1Ban2;
+            PlayerBan2.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+            
     }
 
     public void ActivateFullMiddlePic()
     {
-
         fullPicMiddle.SetActive(true);
         fullPicMiddleImage.sprite = Resources.Load<Sprite>(picAssetPath);
     }
@@ -238,65 +262,72 @@ public class CoreMethods : MonoBehaviour
     //  are already a part of the currently chosen heroes by each side.
 
 
+    IDictionary<string, int> totalCompsJSONDict;
+    IDictionary<int, IDictionary<string, string>> AllCompsDict;
+
     public void GetEnemyComp()
     {
-        map = GM.draftMap;
+        map = ddm.map;
         enemyComp.Clear();
+        Debug.Log("Method reached:   GetEnemyComp");
+        totalCompsJSON = File.ReadAllText(Application.dataPath + "/Resources/HotSMapStuff/TotalComps.json");
+        totalCompsJSONDict = JsonConvert.DeserializeObject<IDictionary<string, int>>(totalCompsJSON);
+
         if (map == "BoE")
         {
-            Debug.Log("Method reached:   GetEnemyComp");
-            totalCompsJSON = File.ReadAllText(Application.dataPath + "/Resources/HotSMapStuff/TotalComps.json");
-            var totalCompsObj = JsonConvert.DeserializeObject<Dictionary<string, int>>(totalCompsJSON);
-            totalComps = totalCompsObj["TotalBoEComps"];
-            Debug.Log("totalComps = " + totalComps);
+            totalCompsJSONDict.TryGetValue("TotalBoEComps", out totalComps);
+            Debug.Log("totalBoEComps = " + totalComps);
             jTeamID = Random.Range(1, totalComps + 1);
             Debug.Log("JSONTest says: Comp chosen = " + jTeamID);
             jsonString = File.ReadAllText(Application.dataPath + "/Resources/HotSMapStuff/BoEComps.json");
-            var BoEComp = JsonConvert.DeserializeObject<IDictionary<int, IDictionary<string, string>>>(jsonString);
 
-            enemyComp.Add("Won", BoEComp[jTeamID]["Won"]);
-            enemyComp.Add("Team", BoEComp[jTeamID]["Team"]);
-            enemyComp.Add("When", BoEComp[jTeamID]["When"]);
-            enemyComp.Add("Place", BoEComp[jTeamID]["Place"]);
-            enemyComp.Add("Against", BoEComp[jTeamID]["Against"]);
-            enemyComp.Add("Ban1", BoEComp[jTeamID]["Ban1"]);
-            enemyComp.Add("Ban2", BoEComp[jTeamID]["Ban2"]);
-            enemyComp.Add("Pick1", BoEComp[jTeamID]["Pick1"]);
-            enemyComp.Add("Pick2", BoEComp[jTeamID]["Pick2"]);
-            enemyComp.Add("Pick3", BoEComp[jTeamID]["Pick3"]);
-            enemyComp.Add("Pick4", BoEComp[jTeamID]["Pick4"]);
-            enemyComp.Add("Pick5", BoEComp[jTeamID]["Pick5"]);
-            enemyComp.Add("Strengths", BoEComp[jTeamID]["Strengths"]);
-            enemyComp.Add("Weaknesses", BoEComp[jTeamID]["Weaknesses"]);
-            enemyComp.Add("Counter1", BoEComp[jTeamID]["Counter1"]);
-            enemyComp.Add("Counter2", BoEComp[jTeamID]["Counter2"]);
-            enemyComp.Add("Counter3", BoEComp[jTeamID]["Counter3"]);
-            enemyComp.Add("Counter4", BoEComp[jTeamID]["Counter4"]);
-            Debug.Log("All variables added to enemyComp");
         }
-        else { }
         //  Need to set up all other map composition JSONs as IF statements as well.
+        else { }
+
+        AllCompsDict = JsonConvert.DeserializeObject<IDictionary<int, IDictionary<string, string>>>(jsonString);
+        enemyComp.Add("Won", AllCompsDict[jTeamID]["Won"]);
+        enemyComp.Add("Team", AllCompsDict[jTeamID]["Team"]);
+        enemyComp.Add("When", AllCompsDict[jTeamID]["When"]);
+        enemyComp.Add("Place", AllCompsDict[jTeamID]["Place"]);
+        enemyComp.Add("Against", AllCompsDict[jTeamID]["Against"]);
+        enemyComp.Add("Ban1", AllCompsDict[jTeamID]["Ban1"]);
+        enemyComp.Add("Ban2", AllCompsDict[jTeamID]["Ban2"]);
+        enemyComp.Add("Pick1", AllCompsDict[jTeamID]["Pick1"]);
+        enemyComp.Add("Pick2", AllCompsDict[jTeamID]["Pick2"]);
+        enemyComp.Add("Pick3", AllCompsDict[jTeamID]["Pick3"]);
+        enemyComp.Add("Pick4", AllCompsDict[jTeamID]["Pick4"]);
+        enemyComp.Add("Pick5", AllCompsDict[jTeamID]["Pick5"]);
+        enemyComp.Add("Strengths", AllCompsDict[jTeamID]["Strengths"]);
+        enemyComp.Add("Weaknesses", AllCompsDict[jTeamID]["Weaknesses"]);
+        enemyComp.Add("Counter1", AllCompsDict[jTeamID]["Counter1"]);
+        enemyComp.Add("Counter2", AllCompsDict[jTeamID]["Counter2"]);
+        enemyComp.Add("Counter3", AllCompsDict[jTeamID]["Counter3"]);
+        enemyComp.Add("Counter4", AllCompsDict[jTeamID]["Counter4"]);
+        Debug.Log("All variables added to enemyComp");
     }
+
     public void ConfirmComp()
     {
         if (playerTeam.ContainsValue(enemyComp["Ban1"]))
-            enemyCompReady = false;
+            enemyCompReady = "no";
         if (playerTeam.ContainsValue(enemyComp["Ban2"]))
-            enemyCompReady = false;
+            enemyCompReady = "no";
         if (playerTeam.ContainsValue(enemyComp["Pick1"]))
-            enemyCompReady = false;
+            enemyCompReady = "no";
         if (playerTeam.ContainsValue(enemyComp["Pick2"]))
-            enemyCompReady = false;
+            enemyCompReady = "no";
         if (playerTeam.ContainsValue(enemyComp["Pick3"]))
-            enemyCompReady = false;
+            enemyCompReady = "no";
         if (playerTeam.ContainsValue(enemyComp["Pick4"]))
-            enemyCompReady = false;
+            enemyCompReady = "no";
         if (playerTeam.ContainsValue(enemyComp["Pick5"]))
-            enemyCompReady = false;
+            enemyCompReady = "no";
+
         //  Successfully selected team gets placed into the enemyComp IDictionary to keep it easily accessible.
         else
         {
-            enemyCompReady = true;
+            enemyCompReady = "yes";
             Debug.Log("enemyComp Ban1 will be: " + enemyComp["Ban1"]);
         }
     }
@@ -306,13 +337,247 @@ public class CoreMethods : MonoBehaviour
     float waitTime;
 
 
-    public void EnemyFirstBanPicPortrait()
+    public void EnemyBanPicPortrait()
     {
-        EBan1 = enemyComp["Ban1"];
-        portraitAssetPath = "HotSPortraits/" + EBan1;
+        draftStage = GM.draftStage;
         EnemyBanText.SetActive(false);
-        EnemyBan1.sprite = Resources.Load<Sprite>(portraitAssetPath);
-        picAssetPath = "HotsPics/" + EBan1 + "Pic";
+        if ((draftStage == "Ban1") || (draftStage == "Ban2"))
+        {
+            EBan1 = enemyComp["Ban1"];
+            portraitAssetPath = "HotSPortraits/" + EBan1;
+            EnemyBan1.sprite = Resources.Load<Sprite>(portraitAssetPath);
+            picAssetPath = "HotsPics/" + EBan1 + "Pic";
+        }
+        if ((draftStage == "Ban3") || (draftStage == "Ban4"))
+        {
+            EBan2 = enemyComp["Ban2"];
+            portraitAssetPath = "HotSPortraits/" + EBan2;
+            EnemyBan2.sprite = Resources.Load<Sprite>(portraitAssetPath);
+            picAssetPath = "HotsPics/" + EBan2 + "Pic";
+        }
+        NewStageVariableClear();
     }
-    
+
+    public void NewStageVariableClear()
+    {
+        chosenHero = "none";
+        activeTeam = "none";
+        draftStage = "none";
+        enemyCompReady = "no";
+    }
+
+    public void BanStart()
+    {
+        if (activeTeam == "Player")
+        {
+            PlayerBanText.SetActive(true);
+        }
+        else
+        {
+            EnemyBanText.SetActive(true);
+        }
+    }
+
+    public void SinglePickStartText()
+    {
+        if (activeTeam == "Player")
+        {
+            PlayerSinglePickText.SetActive(true);
+        }
+        else
+        {
+            EnemySinglePickText.SetActive(true);
+        }
+    }
+
+    public void DoublePickStartText()
+    {
+        if (activeTeam == "Player")
+        {
+            PlayerDoublePickText.SetActive(true);
+        }
+        else
+        {
+            EnemyDoublePickText.SetActive(true);
+        }
+    }
+
+    public void PlayerSinglePickHeroChosen()
+    {
+        chosenHero = GM.myChosenHero;
+        PlayerSinglePickText.SetActive(false);
+        portraitAssetPath = "HotSPortraits/" + chosenHero;
+        picAssetPath = "HotsPics/" + chosenHero + "Pic";
+
+        if (draftStage == "Pick1")
+        {
+            P1Pick1 = chosenHero;
+            playerTeam["P1Pick1"] = P1Pick1;
+            PlayerPick1.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+        if (draftStage == "Pick6")
+        {
+            P1Pick3 = chosenHero;
+            playerTeam["P1Pick3"] = P1Pick3;
+            PlayerPick3.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+        NewStageVariableClear();
+    }
+
+    public void EnemySinglePickPicPortrait()
+    {
+        draftStage = GM.draftStage;
+        EnemySinglePickText.SetActive(false);
+        if (draftStage == "Pick1")
+        {
+            EPick1 = enemyComp["Pick1"];
+            Debug.Log("Enemy's first pick is:  " + EPick1);
+            portraitAssetPath = "HotSPortraits/" + EPick1;
+            EnemyPick1.sprite = Resources.Load<Sprite>(portraitAssetPath);
+            picAssetPath = "HotsPics/" + EPick1 + "Pic";
+        }
+        if (draftStage == "Pick6")
+        {
+            EPick3 = enemyComp["Pick3"];
+            Debug.Log("Enemy's first pick is:  " + EPick3);
+            portraitAssetPath = "HotSPortraits/" + EPick3;
+            EnemyPick3.sprite = Resources.Load<Sprite>(portraitAssetPath);
+            picAssetPath = "HotsPics/" + EPick3 + "Pic";
+        }
+        NewStageVariableClear();
+    }
+
+    public void PlayerDoublePickFirstHeroChosen()
+    {
+        draftStage = GM.draftStage;
+        chosenHero = GM.myChosenHero;
+        PlayerDoublePickText.SetActive(false);
+        PlayerSecondDoublePickText.SetActive(true);
+        portraitAssetPath = "HotSPortraits/" + chosenHero;
+        picAssetPath = "HotsPics/" + chosenHero + "Pic";
+
+        if (draftStage == "Pick23")
+        {
+            P1Pick1 = chosenHero;
+            playerTeam["P1Pick1"] = P1Pick1;
+            PlayerPick1.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+        if (draftStage == "Pick45")
+        {
+            P1Pick2 = chosenHero;
+            playerTeam["P1Pick2"] = P1Pick2;
+            PlayerPick2.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+        if ((draftStage == "Pick78") || (draftStage == "Pick910"))
+        {
+            P1Pick4 = chosenHero;
+            playerTeam["P1Pick4"] = P1Pick4;
+            PlayerPick4.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+
+    }
+
+    public void PlayerDoublePickSecondHeroChosen()
+    {
+        draftStage = GM.draftStage;
+        chosenHero = GM.myChosenHero;
+        portraitAssetPath = "HotSPortraits/" + chosenHero;
+        picAssetPath = "HotsPics/" + chosenHero + "Pic";
+        PlayerSecondDoublePickText.SetActive(false);
+
+        if (draftStage == "Pick23")
+        {
+            P1Pick2 = chosenHero;
+            playerTeam["P1Pick2"] = P1Pick2;
+            PlayerPick2.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+        if (draftStage == "Pick45")
+        {
+            P1Pick3 = chosenHero;
+            playerTeam["P1Pick3"] = P1Pick3;
+            PlayerPick3.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+        if ((draftStage == "Pick78") || (draftStage == "Pick910"))
+        {
+            P1Pick5 = chosenHero;
+            playerTeam["P1Pick5"] = P1Pick5;
+            PlayerPick5.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+        NewStageVariableClear();
+    }
+
+    public void ActivateFullLeftPic()
+    {
+        fullPicLeft.SetActive(true);
+        fullPicLeftImage.sprite = Resources.Load<Sprite>(picAssetPath);
+    }
+
+    public void ActivateFullRightPic()
+    {
+        fullPicRight.SetActive(true);
+        fullPicRightImage.sprite = Resources.Load<Sprite>(picAssetPath);
+    }
+
+    public void EnemyFirstDoublePickPicPortrait()
+    {
+        EnemyDoublePickText.SetActive(false);
+        if (draftStage == "Pick23")
+        {
+            EPick1 = enemyComp["Pick1"];
+            portraitAssetPath = "HotSPortraits/" + EPick1;
+            picAssetPath = "HotsPics/" + EPick1 + "Pic";
+            EnemyPick1.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+        if (draftStage == "Pick45")
+        {
+            EPick2 = enemyComp["Pick2"];
+            portraitAssetPath = "HotSPortraits/" + EPick2;
+            picAssetPath = "HotsPics/" + EPick2 + "Pic";
+            EnemyPick2.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+        if ((draftStage == "Pick78") || (draftStage == "Pick910"))
+        {
+            EPick4 = enemyComp["Pick4"];
+            portraitAssetPath = "HotSPortraits/" + EPick4;
+            picAssetPath = "HotsPics/" + EPick4 + "Pic";
+            EnemyPick4.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+        else { }
+    }
+
+    public void EnemySecondDoublePickPicPortrait()
+    {
+        if (draftStage == "Pick23")
+        {
+            EPick2 = enemyComp["Pick2"];
+            portraitAssetPath = "HotSPortraits/" + EPick2;
+            picAssetPath = "HotsPics/" + EPick2 + "Pic";
+            EnemyPick2.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+        if (draftStage == "Pick45")
+        {
+            EPick3 = enemyComp["Pick3"];
+            portraitAssetPath = "HotSPortraits/" + EPick3;
+            picAssetPath = "HotsPics/" + EPick3 + "Pic";
+            EnemyPick3.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+        if ((draftStage == "Pick78") || (draftStage == "Pick910"))
+        {
+            EPick5 = enemyComp["Pick5"];
+            portraitAssetPath = "HotSPortraits/" + EPick5;
+            picAssetPath = "HotsPics/" + EPick5 + "Pic";
+            EnemyPick5.sprite = Resources.Load<Sprite>(portraitAssetPath);
+        }
+        NewStageVariableClear();
+    }
+
+
+
+    public void DebugTeams()
+    {
+        string playerTeamList = P1Pick1 + ", " + P1Pick2 + ", " + P1Pick3 + ", " + P1Pick4 + ", " + P1Pick5 + " with " + P1Ban1 + " and " + P1Ban2 + " banned.";
+        Debug.Log("Current playerTeam Listing is:  " + playerTeamList);
+        string enemyCompList = EPick1 + ", " + EPick2 + ", " + EPick3 + ", " + EPick4 + ", " + EPick5 + " with " + EBan1 + " and " + EBan2 + " banned.";
+        Debug.Log("Current enemyComp Listing is:  " + enemyCompList);
+    }
 }
