@@ -1,6 +1,8 @@
 # HotS-Drafting-Minigame
 Drafting minigame for Heroes of the Storm
 
+My goal in making this game is to provide a platform for players to learn how to draft effectively and to better understand map strategy.  This is to be done via providing well-reasoned feedback to mock-drafts against professional HotS eSports compositions and providing basic map strategy information.
+
 Things that you can do as yet:
 1)  select a map to see its minimap.
 2)  Click on that minimap in order to see a zoomed in map with strategy advice.
