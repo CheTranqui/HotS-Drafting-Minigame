@@ -1,6 +1,8 @@
 # HotS-Drafting-Minigame
 Drafting minigame for Heroes of the Storm
 
+This minigame is made via Unity with all scripting written in C#.
+
 My goal in making this game is to provide a platform for players to learn how to draft effectively and to better understand map strategy.  This is to be done via providing well-reasoned feedback to mock-drafts against professional HotS eSports compositions and providing basic map strategy information.
 
 Things that you can do as yet:
