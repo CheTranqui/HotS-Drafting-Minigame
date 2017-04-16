@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using UnityEditor;
 
 public class DropdownMapSwitcher : MonoBehaviour
 {
@@ -64,7 +63,10 @@ public class DropdownMapSwitcher : MonoBehaviour
         map = "none";
         mapDropdown.value = 0;
         gm = GameObject.Find("Main Camera").GetComponent<GameManager>();
-        mapTextString = File.ReadAllText(Application.dataPath + "/Resources/HotSMapStuff/MapText.json");
+        //    Following path doesn't work in EXE
+        //     mapTextString = File.ReadAllText(Application.dataPath + "/Resources/HotSMapStuff/MapText.json");
+        mapTextString = Resources.Load("HotSMapStuff/mapText", typeof(TextAsset)).ToString();
+
         mapTextDict = JsonConvert.DeserializeObject<IDictionary<string, IDictionary<string, string>>>(mapTextString);
         mapDropdown.onValueChanged.AddListener(delegate { DropDownSelection(); });
         CreditsButton.onClick.AddListener(delegate { ShowCreditsPanel(); });
