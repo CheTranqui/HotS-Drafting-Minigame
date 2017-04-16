@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using UnityEditor;
 
 public class GameManager : MonoBehaviour {
 
@@ -26,11 +25,12 @@ public class GameManager : MonoBehaviour {
     public GameObject fullPicLeft;
     public GameObject fullPicRight;
     public GameObject FullMiddlePanel;
+    public HeroSelectScript hs;
     public Button StartButton;
     public Button CreditsButton;
     public string myChosenHero;
     public string draftMap;
-    private string myEnemyCompReady;
+    public string myEnemyCompReady;
     public string draftStage;
     public string activeTeam;
 
@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour {
 
     public void StartTheDraft()
     {
+        Debug.Log("GM = StartTheDraft()");
         draftMap = "none";
         draftStage = "none";
         myChosenHero = "none";
@@ -74,13 +75,14 @@ public class GameManager : MonoBehaviour {
     }
     IEnumerator WaitForMap()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
         CheckForMap();
     }
 
     IEnumerator PauseForWhoGoesFirst()
     {
-        yield return new WaitForSeconds(1);
+        Debug.Log("GM = PauseForWhoGoesFirst()");
+        yield return new WaitForSeconds(1.0f);
         PlayerPicksBansPanel.SetActive(true);
         EnemyPicksBansPanel.SetActive(true);
         draftStage = "new";
@@ -89,31 +91,31 @@ public class GameManager : MonoBehaviour {
 
     public void MidDraftLandingSite()
     {
-        Debug.Log("MidDraftLandingSite says:  Current draftStage = " + draftStage);
-        myChosenHero = "none";
-        HeroSelectScript.chosenHero = "none";
+        Debug.Log("MidDraftLandingSite says:  Previous draftStage = " + draftStage);
         cm.DeactivateClassButtons();
         cm.NewStageVariableClear();
+        myEnemyCompReady = "no";
+        myChosenHero = "none";
 
-        if (draftStage == "Pick910")
+        if (draftStage == "Pick10")
         {
             draftStage = "Complete";
             DraftComplete();
         }
-        if (draftStage == "Pick78")
+        if (draftStage == "Pick89")
         {
-            draftStage = "Pick910";
-            DoublePickStart();
+            draftStage = "Pick10";
+            SinglePickStart();
         }
-        if (draftStage == "Pick6")
+        if (draftStage == "Pick67")
         {
-            draftStage = "Pick78";
+            draftStage = "Pick89";
             DoublePickStart();
         }
         if (draftStage == "Ban4")
         {
-            draftStage = "Pick6";
-            SinglePickStart();
+            draftStage = "Pick67";
+            DoublePickStart();
         }
         if (draftStage == "Ban3")
         {
@@ -150,20 +152,20 @@ public class GameManager : MonoBehaviour {
             draftStage = "Ban1";
             FirstBan();
         }
-        else { }
-        Debug.Log("MidDraftLandingSite sending us to:  " + draftStage);
+        Debug.Log("MidDraftLandingSite sending us to new draftStage:  " + draftStage);
     }
 
     private void FirstBan()
     {
-        draftStage = "Ban1";
-        cm.GetMap();
+        cm.SetCMMap();
         cm.OpeningBan();
+        cm.GetEnemyComp();
         BanStart();
     }
 
     private void BanStart()
     {
+        Debug.Log("GM = BanStart()");
         cm.ActiveTeamCheck();
         activeTeam = cm.activeTeam;
         cm.DisplayBanText();
@@ -179,10 +181,8 @@ public class GameManager : MonoBehaviour {
 
     public void BanHeroCheck()
     {
-        Debug.Log("GM activeTeam = " + activeTeam);
         if (activeTeam == "Player")
         {
-            Debug.Log("GM = FirstBanHeroCheck() + activeTeam = Player");
             if (myChosenHero == "none")
             {
                 StartCoroutine(BanHeroCheckWait());
@@ -192,13 +192,13 @@ public class GameManager : MonoBehaviour {
                 cm.PlayerBanChosen();
                 cm.ActivateFullMiddlePic();
                 cm.DeactivateClassButtons();
+                HeroSelectScript.chosenHero = "none";
                 StartCoroutine(BanPicPauseAndDeactivate());
             }
         }
         else
         {
-            Debug.Log("GM = FirstBanHeroCheck() + activeTeam = Enemy");
-            EnemyBanCheck();
+            EnemyBanCompCheck();
         }
     }
     public void EnemyBanCheck()
@@ -208,30 +208,42 @@ public class GameManager : MonoBehaviour {
         if (myEnemyCompReady == "no")
         {
             EnemyBanText.SetActive(true);
-            StartCoroutine(EnemyBanWait());
+            EnemyBanCompCheck();
         }
-        else
+        if (myEnemyCompReady == "checking")
+        {
+            EnemyBanText.SetActive(true);
+            StartCoroutine(EnemyBanCheckWait());
+        }
+        if (myEnemyCompReady == "yes")
         {
             StartCoroutine(EnemyBanLockWait());
         }
     }
 
-    IEnumerator EnemyBanWait()
+    IEnumerator EnemyBanCheckWait()
     {
-        cm.GetEnemyComp();
-        yield return new WaitForSeconds(0.6f);
-        cm.ConfirmComp();
+        yield return new WaitForSeconds(1.5f);
         EnemyBanCheck();
+    }
+
+    private void EnemyBanCompCheck()
+    {
+        Debug.Log("GM = EnemyBanCompCheck()");
+        cm.ConfirmComp();
+        StartCoroutine(EnemyBanCheckWait());
     }
 
     IEnumerator EnemyBanLockWait()
     {
-        yield return new WaitForSeconds(1f);
+        Debug.Log("GM = EnemyBanLockWait()");
+        yield return new WaitForSeconds(1.0f);
         EnemyBanLock();
     }
 
     public void EnemyBanLock()
     {
+        Debug.Log("GM = EnemyBanLock()");
         cm.EnemyBanPicPortrait();
         cm.ActivateFullMiddlePic();
         StartCoroutine(BanPicPauseAndDeactivate());
@@ -239,102 +251,12 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator BanPicPauseAndDeactivate()
     {
-        yield return new WaitForSeconds(2.2f);
+        Debug.Log("GM = BanPicPauseAndDeactivate()");
+        yield return new WaitForSeconds(2f);
         fullPicMiddle.SetActive(false);
         MidDraftLandingSite();
     }
 
-    /* private void SecondBan()
-    {
-        cm.DebugTeams();
-        draftStage = "Ban2";
-        cm.ActiveTeamCheck();
-        myChosenHero = "none";
-        HeroSelectScript.chosenHero = "none";
-        activeTeam = cm.activeTeam;
-        cm.BanStart();
-        cm.DeactivateClassButtons();
-        SecondBanHeroCheck();
-    }
-
-    IEnumerator SecondBanHeroCheckWait()
-    {
-        yield return new WaitForSeconds(0.5f);
-        myChosenHero = HeroSelectScript.chosenHero;
-        SecondBanHeroCheck();
-    }
-
-    public void SecondBanHeroCheck()
-    {
-        cm.ConfirmComp();
-        if (activeTeam == "Player")
-        {
-            Debug.Log("GM = SecondBanHeroCheck() + activeTeam = Player");
-            if (myChosenHero == "none")
-            {
-                StartCoroutine(SecondBanHeroCheckWait());
-            }
-            else
-            {
-                cm.PlayerBanChosen();
-                cm.ActivateFullMiddlePic();
-                cm.DeactivateClassButtons();
-                StartCoroutine(SecondBanPicPauseAndDeactivate());
-            }
-        }
-        else
-        {
-            Debug.Log("GM = SecondBanHeroCheck() + activeTeam = Enemy");
-            myEnemyCompReady = cm.enemyCompReady;
-            if (myEnemyCompReady == "no")
-            {
-                EnemyBanText.SetActive(true);
-                cm.GetEnemyComp();
-                StartCoroutine(SecondBanEnemyWait());
-            }
-            else
-            {
-                StartCoroutine(SecondBanEnemyLockWait());
-            }
-        }
-    }
-
-    IEnumerator SecondBanEnemyWait()
-    {
-        yield return new WaitForSeconds(0.3f);
-        cm.ConfirmComp();
-        yield return new WaitForSeconds(0.3f);
-        SecondBanHeroCheck();
-    }
-
-    IEnumerator SecondBanEnemyLockWait()
-    {
-        yield return new WaitForSeconds(1.5f);
-        SecondBanEnemyLock();
-    }
-
-    public void SecondBanEnemyLock()
-    {
-        cm.EnemyBanPicPortrait();
-        cm.ActivateFullMiddlePic();
-        StartCoroutine(SecondBanPicPauseAndDeactivate());
-    }
-
-    IEnumerator SecondBanPicPauseAndDeactivate()
-    {
-        yield return new WaitForSeconds(2.2f);
-        fullPicMiddle.SetActive(false);
-        FirstPick();
-    }
-    
-    private void FirstPick()
-    {
-        draftStage = "Pick1";
-        SinglePickStart();
-    }
-    
-    */
-    
 private void SinglePickStart()
     {
         cm.ActiveTeamCheck();
@@ -354,7 +276,6 @@ private void SinglePickStart()
     {
         if (activeTeam == "Player")
         {
-            Debug.Log("GM = FirstPickHeroCheck() + activeTeam = Player");
             if (myChosenHero == "none")
             {
                 StartCoroutine(SinglePickHeroCheckWait());
@@ -364,38 +285,46 @@ private void SinglePickStart()
                 cm.PlayerSinglePickHeroChosen();
                 cm.ActivateFullMiddlePic();
                 cm.DeactivateClassButtons();
+                HeroSelectScript.chosenHero = "none";
                 StartCoroutine(SinglePickPicPauseAndDeactivate());
             }
         }
         else
         {
-            SinglePickEnemyCheck();
+            SinglePickEnemyConfirm();
         }
     }
 
     public void SinglePickEnemyCheck()
     {
-        cm.ConfirmComp();
-        Debug.Log("GM = FirstPickHeroCheck() + activeTeam = Enemy");
         myEnemyCompReady = cm.enemyCompReady;
+        Debug.Log("GM.SinglePickEnemyCheck says myEnemyCompReady = " + myEnemyCompReady);
         if (myEnemyCompReady == "no")
         {
             EnemySinglePickText.SetActive(true);
-            cm.GetEnemyComp();
-            StartCoroutine(SinglePickEnemyWait());
+            SinglePickEnemyConfirm();
         }
-        else
+        if (myEnemyCompReady == "checking")
+        {
+            EnemySinglePickText.SetActive(true);
+            StartCoroutine(SinglePickEnemyCheckWait());
+        }
+        if (myEnemyCompReady == "yes")
         {
             StartCoroutine(SinglePickEnemyLockWait());
         }
-
     }
 
-    IEnumerator SinglePickEnemyWait()
+    IEnumerator SinglePickEnemyCheckWait()
     {
-        yield return new WaitForSeconds(0.6f);
-        cm.ConfirmComp();
+        yield return new WaitForSeconds(1.5f);
         SinglePickEnemyCheck();
+    }
+
+    private void SinglePickEnemyConfirm()
+    {
+        cm.ConfirmComp();
+        StartCoroutine(SinglePickEnemyCheckWait());
     }
 
     IEnumerator SinglePickEnemyLockWait()
@@ -441,7 +370,6 @@ private void SinglePickStart()
     {
         if (activeTeam == "Player")
         {
-            Debug.Log("GM = DoublePickHeroCheck() + activeTeam = Player");
             if (myChosenHero == "none")
             {
                 StartCoroutine(DoublePickHeroCheckWait());
@@ -457,31 +385,45 @@ private void SinglePickStart()
         }
         else
         {
-            StartCoroutine(DoublePickEnemyWait());
+            DoublePickEnemyConfirm();
         }
     }
 
     public void DoublePickEnemyCheck()
     {
-        Debug.Log("GM = DoublePickHeroCheck() + activeTeam = Enemy");
         myEnemyCompReady = cm.enemyCompReady;
+        Debug.Log("GM.DoublePickEnemyCheck says myEnemyCompReady = " + myEnemyCompReady);
         if (myEnemyCompReady == "no")
         {
             EnemyDoublePickText.SetActive(true);
-            cm.GetEnemyComp();
-            StartCoroutine(DoublePickEnemyWait());
+            DoublePickEnemyConfirm();
         }
-        else
+        if (myEnemyCompReady == "checking")
+        {
+            EnemyDoublePickText.SetActive(true);
+            StartCoroutine(DoublePickEnemyCheckWait());
+        }
+        if (myEnemyCompReady == "yes")
         {
             StartCoroutine(DoublePickEnemyLockWait());
         }
+    }
 
+    private void DoublePickEnemyConfirm()
+    {
+        cm.ConfirmComp();
+        StartCoroutine(DoublePickEnemyCheckWait());
+    }
+
+    IEnumerator DoublePickEnemyCheckWait()
+    {
+        yield return new WaitForSeconds(1.5f);
+        DoublePickEnemyCheck();
     }
 
     public void DoublePickSecondHeroCheck()
     {
         myChosenHero = HeroSelectScript.chosenHero;
-        Debug.Log("GM = DoublePickSecondHeroCheck()");
         if (myChosenHero == "none")
         {
             StartCoroutine(DoublePickSecondHeroCheckWait());
@@ -502,13 +444,6 @@ private void SinglePickStart()
         DoublePickSecondHeroCheck();
     }
 
-    IEnumerator DoublePickEnemyWait()
-    {
-        yield return new WaitForSeconds(0.6f);
-        cm.ConfirmComp();
-        DoublePickEnemyCheck();
-    }
-
     IEnumerator DoublePickEnemyLockWait()
     {
         yield return new WaitForSeconds(1f);
@@ -518,7 +453,7 @@ private void SinglePickStart()
 
     IEnumerator DoublePickEnemySecondLockWait()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.0f);
         DoublePickEnemyLock2();
     }
 
